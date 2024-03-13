@@ -2,6 +2,7 @@
 #include <raymath.h>
 
 #include "PlayerStateMachine.cpp"
+#include "enemystatemachine.cpp"
 
 const int WINDOW_WIDTH(800);
 const int WINDOW_HEIGHT(600);
@@ -33,6 +34,7 @@ int main(){
     camera_view.zoom = 1.0f;
 
     Player player({WINDOW_WIDTH/2, WINDOW_HEIGHT/2}, 25.0f, 200.0, 1.0, 0.25);
+    Enemy enemy({200,200}, 50, 50, 160.0f, 300.0f, 90.0f, 50.0f);
 
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Making Enemies");
 
@@ -41,7 +43,8 @@ int main(){
 
         // update player
         player.Update(delta_time);
-        
+        enemy.Update(delta_time);
+
         //cameria view collision
         if (player.position.x+player.radius >= view.position.x + view.width){
             view.position.x = player.position.x+player.radius - view.width;
@@ -83,6 +86,7 @@ int main(){
         DrawRectangle(250, 300, 200, 500, PURPLE);
         DrawCircle(100, 400, 150, RED);
         player.Draw();
+        enemy.Draw();
         EndMode2D();
         EndDrawing();
 
