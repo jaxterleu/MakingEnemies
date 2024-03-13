@@ -48,6 +48,7 @@ class Player{
         Vector2 position;
         float radius;
         Color color;
+        int health;
 
         Vector2 velocity;
         float speed;
@@ -62,7 +63,8 @@ class Player{
         void Update(float delta_time);
 
         void Draw();
-
+        void DrawPlayerHealth();
+        
         void SetState(PlayerState* new_state);
 
         void SetCounter(float dcount);

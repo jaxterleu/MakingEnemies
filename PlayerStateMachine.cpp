@@ -1,6 +1,6 @@
 #include <raylib.h>
 #include <raymath.h>
-
+#include <string>
 #include "Player.hpp"
 #include <stdio.h>
 
@@ -10,6 +10,10 @@ void Player::Update(float delta_time){
 
 void Player::Draw() {
     DrawCircleV(position, radius, color);
+}
+
+void Player::DrawPlayerHealth() {
+    DrawText(std::to_string(health).c_str(), 10, 10, 40, WHITE);
 }
 
 void Player::SetState(PlayerState* new_state) {
@@ -39,6 +43,7 @@ Player::Player(Vector2 pos, float rad, float spd, float atime, float dtime){
     speed = spd;
     attacktime = atime;
     dodgetime = dtime;
+    health = 5;
     SetState(&idle);
     SetCounter(0.0);
 }

@@ -77,13 +77,13 @@ int main(){
 
         BeginDrawing();
         ClearBackground(BLACK);
+        player.DrawPlayerHealth();
         // establish camera view
         BeginMode2D(camera_view);
-
         DrawRectangle(250, 300, 200, 500, PURPLE);
         DrawCircle(100, 400, 150, RED);
         player.Draw();
-
+        EndMode2D();
         EndDrawing();
 
     }
