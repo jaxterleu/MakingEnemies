@@ -97,6 +97,7 @@ int main(){
         if (player.radius+enemy.attackradius >= Vector2Distance(player.position, enemy.position)){
             enemy.insideattack = true;
             enemy.targetpos = player.position;
+            player.health = 0;
         }
         else{
             enemy.insideattack = false;
@@ -107,11 +108,27 @@ int main(){
 
         BeginDrawing();
         ClearBackground(BLACK);
-        player.DrawPlayerHealth();
-        // establish camera view
-        BeginMode2D(camera_view);
-        player.Draw();
-        enemy.Draw();
+        // Check if player loses
+        if (player.health == 0){
+            view.position.x = WINDOW_WIDTH/2;
+            view.position.y = WINDOW_HEIGHT/2;
+            ClearBackground(BLACK);
+            DrawText("You Lose", WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 50, WHITE);
+        }
+        // Check if player wins
+        else if ((enemy.health) == 0){
+            view.position.x = WINDOW_WIDTH/2;
+            view.position.y = WINDOW_HEIGHT/2;
+            ClearBackground(BLACK);
+            DrawText("You Win", WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 50, WHITE);
+        }
+        else {
+            player.DrawPlayerHealth();
+            // establish camera view
+            BeginMode2D(camera_view);
+            player.Draw();
+            enemy.Draw();
+        }
         EndMode2D();
         EndDrawing();
 
