@@ -97,7 +97,6 @@ int main(){
         if (player.radius+enemy.attackradius >= Vector2Distance(player.position, enemy.position)){
             enemy.insideattack = true;
             enemy.targetpos = player.position;
-            player.health = 0;
         }
         else{
             enemy.insideattack = false;
