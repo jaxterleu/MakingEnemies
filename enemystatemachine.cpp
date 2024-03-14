@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include <raymath.h>
+#include <cmath>
 #include "enemy.hpp"
 #include <cstdlib>
 #include <string>
@@ -10,7 +11,22 @@ void Enemy::Update(float delta_time){
 }
 
 void Enemy::Draw(){
-    DrawRectangle(position.x-width/2, position.y-height/2, width, height, color);
+    // If current state is readying, orient towards player
+    if(current_state != &wandering){
+        //get direction towards rec
+        Rectangle rec;
+        rec.x = position.x;
+        rec.y = position.y;
+        rec.width = width;
+        rec.height = height;
+        Vector2 dir = Vector2Subtract(targetpos, position);
+        float angle = atan2f(dir.y, dir.x) * RAD2DEG;
+        DrawRectanglePro(rec, {(float)width/2,(float)height/2}, angle, color);
+    }
+    else{
+        DrawRectangle(position.x-width/2, position.y-height/2, width, height, color);
+    }
+    
     DrawCircleLines(position.x, position.y, detectradius, YELLOW);
     DrawCircleLines(position.x, position.y, aggroradius, BLUE);
     DrawCircleLines(position.x, position.y, attackradius, RED);
