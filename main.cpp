@@ -4,8 +4,8 @@
 #include "PlayerStateMachine.cpp"
 #include "enemystatemachine.cpp"
 
-const int WINDOW_WIDTH(800);
-const int WINDOW_HEIGHT(600);
+const int WINDOW_WIDTH(1280);
+const int WINDOW_HEIGHT(720);
 const float FPS(60.0f);
 
 //for camera snapping
@@ -34,9 +34,9 @@ int main(){
     camera_view.zoom = 1.0f;
 
     Player player({WINDOW_WIDTH/2, WINDOW_HEIGHT/2}, 25.0f, 200.0, 1.0, 0.25);
-    Enemy enemy({200,200}, 50, 50, 160.0f, 300.0f, 90.0f, 50.0f);
+    Enemy enemy({200,200}, 50, 50, 300.0f, 160.0f, 90.0f, 50.0f);
 
-    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Making Enemies");
+    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Aruego-Berones-Leuterio_Homework03");
 
     while(!WindowShouldClose()){
         float delta_time = GetFrameTime();
@@ -75,6 +75,33 @@ int main(){
                 }
         }
 
+        // Collision Step
+        // Detect Radius Check
+        if (player.radius+enemy.detectradius >= Vector2Distance(player.position, enemy.position)){
+            enemy.detected = true;
+            enemy.targetpos = player.position;
+        }
+        else if(player.radius+enemy.detectradius >= Vector2Distance(player.position, enemy.position) && player.radius+enemy.aggroradius <= Vector2Distance(player.position, enemy.position)){
+            enemy.detected = false;
+        }
+
+        // Aggro radius check
+        if(player.radius+enemy.aggroradius >= Vector2Distance(player.position, enemy.position)){
+            enemy.targetpos = player.position;
+        }
+        else{
+            enemy.detected = false;
+        }
+
+        // Attack radius check
+        if (player.radius+enemy.attackradius >= Vector2Distance(player.position, enemy.position)){
+            enemy.insideattack = true;
+            enemy.targetpos = player.position;
+        }
+        else{
+            enemy.insideattack = false;
+        }
+
         // update camera
         camera_view.target = {view.position.x+(view.width/2), view.position.y+(view.width/2)};
 
@@ -83,8 +110,6 @@ int main(){
         player.DrawPlayerHealth();
         // establish camera view
         BeginMode2D(camera_view);
-        DrawRectangle(250, 300, 200, 500, PURPLE);
-        DrawCircle(100, 400, 150, RED);
         player.Draw();
         enemy.Draw();
         EndMode2D();

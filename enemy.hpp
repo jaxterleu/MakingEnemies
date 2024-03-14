@@ -40,11 +40,13 @@ public:
 class Enemy {
 public:
 
-    Vector2 position;
+    Vector2 position, targetpos;
     int width, height, currentdir;
     float aggroradius, detectradius, attackradius;
+    bool detected, insideaggro, insideattack;
     Color color;
     int health;
+
 
     Vector2 velocity;
     float speed;

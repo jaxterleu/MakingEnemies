@@ -31,6 +31,9 @@ Enemy::Enemy(Vector2 pos, int w, int h, float aggrorad, float detectrad, float a
     speed = spd;
     health = 5;
     timer = 0;
+    detected = false;
+    insideaggro = false;
+    insideattack = false;
     SetState(&wandering);
 }
 
@@ -42,9 +45,15 @@ void EnemyChasing::Enter(Enemy& enemy){
     enemy.color = YELLOW;
 }
 void EnemyReadying::Enter(Enemy& enemy){
-    enemy.color = ORANGE;
+    enemy.velocity = Vector2Zero();
+    enemy.color = GREEN;
+    enemy.timer = 2;
 }
 void EnemyAttacking::Enter(Enemy& enemy){
+    enemy.velocity = Vector2Zero();
+    Vector2 dir = Vector2Subtract(enemy.targetpos, enemy.position);
+    dir = Vector2Normalize(dir);
+    enemy.velocity = Vector2Scale(dir, 3);
     enemy.color = RED;
 }
 
@@ -79,15 +88,40 @@ void EnemyWandering::Update(Enemy& enemy, float delta_time){
     enemy.timer -= delta_time;  
 
     enemy.position = Vector2Add(enemy.position, enemy.velocity);
-    // If enemy detects player here, make collision
+    // If enemy detects player here, chasing
+    if(enemy.detected){
+        enemy.SetState(&enemy.chasing);
+    }
 }
 
 void EnemyChasing::Update(Enemy& enemy, float delta_time){
+    enemy.velocity = Vector2Zero();
+    Vector2 dir = Vector2Subtract(enemy.targetpos, enemy.position);
+    dir = Vector2Normalize(dir);
+    enemy.velocity = Vector2Scale(dir, delta_time * enemy.speed);
+    enemy.position = Vector2Add(enemy.position, enemy.velocity); 
 
+    if(enemy.detected == false && enemy.insideattack == false){
+        enemy.SetState(&enemy.wandering);
+    }
+
+    if(enemy.insideattack){
+        enemy.SetState(&enemy.readying);
+    }
 }
 void EnemyReadying::Update(Enemy& enemy, float delta_time){
-    
+    if(enemy.timer > 0){
+        enemy.timer -= delta_time;
+    }
+    else{
+        enemy.SetState(&enemy.attacking);
+    }
 }
 void EnemyAttacking::Update(Enemy& enemy, float delta_time){
-    
+    enemy.position = Vector2Add(enemy.position, enemy.velocity);
+    enemy.velocity = Vector2Subtract(enemy.velocity, Vector2Scale(enemy.velocity, 10.0f*delta_time));
+
+    if(Vector2Length(enemy.velocity) < 0.2){
+        enemy.SetState(&enemy.wandering);
+    }
 }
