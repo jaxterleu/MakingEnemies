@@ -50,8 +50,11 @@ class Player{
         Color color;
         int health;
 
+        bool is_hit, is_blocking, is_dodging, is_attacking;
+
         Vector2 velocity;
         float speed;
+        float timer;
 
         float attacktime;
         float dodgetime;

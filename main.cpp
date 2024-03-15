@@ -19,7 +19,7 @@ int main(){
     
     // initiating the camera type
     int cam_type;
-
+    float timer = 0, enemytimer = 0;
     // instantiating view for snapping
     Square view;
     view.position = {100, 100};
@@ -35,6 +35,7 @@ int main(){
 
     Player player({WINDOW_WIDTH/2, WINDOW_HEIGHT/2}, 25.0f, 200.0, 1.0, 0.25);
     Enemy enemy({200,200}, 50, 50, 300.0f, 160.0f, 90.0f, 50.0f);
+
 
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Aruego-Berones-Leuterio_Homework03");
 
@@ -75,6 +76,14 @@ int main(){
                 }
         }
 
+        // Blocking check
+        if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
+            player.is_blocking = true;
+        }
+        else{
+            player.is_blocking = false;
+        }
+
         // Collision Step
         // Detect Radius Check
         if (player.radius+enemy.detectradius >= Vector2Distance(player.position, enemy.position)){
@@ -102,19 +111,62 @@ int main(){
             enemy.insideattack = false;
         }
 
+        //Collision check while enemy is attacking
+        if(player.radius+enemy.width >= Vector2Distance(player.position, enemy.position) && timer<=0 && enemy.isattacking){
+            player.is_hit = true;
+            if(!player.is_dodging){
+                if(player.is_blocking){
+                player.health -= 1;
+                }
+                else{
+                    player.health -= 2;
+                } 
+            }                       
+            std::cout<<"Player is hit\n";
+            //timer is set to 2 once player is hit
+            timer = 2;
+        }
+        else{
+            timer-= delta_time;
+        }
+
+        if(player.is_attacking && player.radius+enemy.width >= Vector2Distance(player.position, enemy.position) && enemytimer<=0){
+            enemytimer = 2;
+            enemy.health -= 1;
+        }
+        else{
+            enemytimer -= delta_time;
+        }
+
+        
+
         // update camera
         camera_view.target = {view.position.x+(view.width/2), view.position.y+(view.width/2)};
 
         BeginDrawing();
         ClearBackground(BLACK);
-        player.DrawPlayerHealth();
-        // establish camera view
-        BeginMode2D(camera_view);
-        player.Draw();
-        enemy.Draw();
-        EndMode2D();
+        if (player.health <= 0){
+            view.position.x = WINDOW_WIDTH/2;
+            view.position.y = WINDOW_HEIGHT/2;
+            DrawText("You Lose", WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 50, WHITE);
+        }
+        // Check if player wins
+        else if ((enemy.health) <= 0){
+            view.position.x = WINDOW_WIDTH/2;
+            view.position.y = WINDOW_HEIGHT/2;
+            DrawText("You Win", WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 50, WHITE);
+        }
+        else {
+            player.DrawPlayerHealth();
+            //Draw Enemy Health
+            DrawText(std::to_string(enemy.health).c_str(), 10, 50, 40, RED);
+            // establish camera view
+            BeginMode2D(camera_view);
+            player.Draw();
+            enemy.Draw();
+            EndMode2D();
+        }
         EndDrawing();
-
     }
     CloseWindow();
     return 0;

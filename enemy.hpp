@@ -43,7 +43,7 @@ public:
     Vector2 position, targetpos;
     int width, height, currentdir;
     float aggroradius, detectradius, attackradius;
-    bool detected, insideaggro, insideattack;
+    bool detected, insideaggro, insideattack, isattacking, is_hit;
     Color color;
     int health;
 

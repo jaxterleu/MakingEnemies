@@ -43,7 +43,10 @@ Player::Player(Vector2 pos, float rad, float spd, float atime, float dtime){
     speed = spd;
     attacktime = atime;
     dodgetime = dtime;
-    health = 5;
+    health = 10;
+    is_hit = false;
+    is_blocking = false;
+    is_dodging = false;
     SetState(&idle);
     SetCounter(0.0);
 }
@@ -63,12 +66,14 @@ void PlayerBlocking::Enter(Player& player){
 }
 
 void PlayerAttacking::Enter(Player& player){
+    player.is_attacking = true;
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
         player.color = RED;
     }
 }
 
 void PlayerDodging::Enter(Player& player){
+    player.is_dodging = true;
     if (IsKeyDown(KEY_SPACE)){
         player.color = WHITE;
     }
@@ -147,7 +152,6 @@ void PlayerDodging::Update(Player& player, float delta_time){
 
     //for a set amt of frames/time/distance
         //go faster in direction last done
-    
     if (player.velocity.x > 0){
         player.velocity.x = player.speed * 5 * delta_time;
     }
@@ -168,9 +172,9 @@ void PlayerDodging::Update(Player& player, float delta_time){
     printf("velo: x%f y%f - %f > %f\n", player.velocity.x, player.velocity.y, player.dodgetime, player.GetCounter());
 
 
-
     //out condition/s
     if (player.GetCounter() > player.dodgetime) {
+        player.is_dodging = false;
         player.SetState(&player.idle);
         player.SetCounter(0.0);
         player.velocity = Vector2Zero();
@@ -187,12 +191,14 @@ void PlayerAttacking::Update(Player& player, float delta_time){
 
     player.SetACounter(player.GetACounter()+delta_time);
 
+    player.position = Vector2Add(player.position, player.velocity);
     //not allowed to move
     player.velocity.y = 0;
     player.velocity.x = 0;
 
     //out condition
     if (player.GetACounter() > player.attacktime){
+        player.is_attacking = false;
         player.SetState(&player.idle);
         player.SetACounter(0.0);
     }

@@ -45,14 +45,14 @@ Enemy::Enemy(Vector2 pos, int w, int h, float aggrorad, float detectrad, float a
     detectradius = detectrad;
     attackradius = atkrad;
     speed = spd;
-    health = 5;
+    health = 2;
     timer = 0;
     detected = false;
     insideaggro = false;
     insideattack = false;
+    isattacking = false;
     SetState(&wandering);
 }
-
 void EnemyWandering::Enter(Enemy& enemy){
     enemy.color = SKYBLUE;
     enemy.timer = 0;
@@ -66,6 +66,7 @@ void EnemyReadying::Enter(Enemy& enemy){
     enemy.timer = 2;
 }
 void EnemyAttacking::Enter(Enemy& enemy){
+    enemy.isattacking = true;
     enemy.velocity = Vector2Zero();
     Vector2 dir = Vector2Subtract(enemy.targetpos, enemy.position);
     dir = Vector2Normalize(dir);
@@ -138,6 +139,7 @@ void EnemyAttacking::Update(Enemy& enemy, float delta_time){
     enemy.velocity = Vector2Subtract(enemy.velocity, Vector2Scale(enemy.velocity, 10.0f*delta_time));
 
     if(Vector2Length(enemy.velocity) < 0.2){
+        enemy.isattacking = false;
         enemy.SetState(&enemy.wandering);
     }
 }
