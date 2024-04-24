@@ -59,21 +59,21 @@ int main(){
             view.position.y = player.position.y-player.radius;
         }
 
-        if (IsKeyUp(KEY_W) && IsKeyUp(KEY_A) && IsKeyUp(KEY_S) && IsKeyUp(KEY_D)){
-            //if player not at center of view
-            if (player.position.x > view.position.x+(view.width/2)){
-                    view.position.x = view.position.x + (player.speed/2)*delta_time;
-                }
-                if (player.position.x < view.position.x+(view.width/2)){
-                    view.position.x = view.position.x - (player.speed/2)*delta_time;
-                }
-                if (player.position.y > view.position.y+(view.width/2)){
-                    view.position.y = view.position.y + (player.speed/2)*delta_time;
-                }
-                if (player.position.y < view.position.y+(view.width/2)){
-                    view.position.y = view.position.y - (player.speed/2)*delta_time;
-                }
-        }
+        // if (IsKeyUp(KEY_W) && IsKeyUp(KEY_A) && IsKeyUp(KEY_S) && IsKeyUp(KEY_D)){
+        //     //if player not at center of view
+        //     if (player.position.x > view.position.x+(view.width/2)){
+        //             view.position.x = view.position.x + (player.speed/2)*delta_time;
+        //         }
+        //         if (player.position.x < view.position.x+(view.width/2)){
+        //             view.position.x = view.position.x - (player.speed/2)*delta_time;
+        //         }
+        //         if (player.position.y > view.position.y+(view.width/2)){
+        //             view.position.y = view.position.y + (player.speed/2)*delta_time;
+        //         }
+        //         if (player.position.y < view.position.y+(view.width/2)){
+        //             view.position.y = view.position.y - (player.speed/2)*delta_time;
+        //         }
+        // }
 
         // Collision Step
         // Detect Radius Check
